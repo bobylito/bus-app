@@ -14,7 +14,6 @@ const DEFAULT_HEIGHT = 600;
 
 export type MapProps = DynMapProps;
 export const Map = (props: MapProps) => {
-  const { width = DEFAULT_WIDTH, height = DEFAULT_HEIGHT } = props;
   return (
     <div className="absolute top-0 left-0 z-0 w-full h-full">
       <DynamicMap {...props} />
