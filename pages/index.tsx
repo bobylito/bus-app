@@ -69,15 +69,23 @@ export default function Home() {
         zoom={14}
         scrollWheelZoom={false}
       >
-        {({ TileLayer, Marker }: any /*, { map }*/) => (
-          <>
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-            />
-            <Marker position={position || DEFAULT_CENTER}></Marker>
-          </>
-        )}
+        {({ TileLayer, Marker }: any, { icon }: any) => {
+          const bus = icon({
+            iconUrl: "images/Bus.png",
+            iconSize: [48, 48],
+            iconAnchor: [24, 48],
+          });
+
+          return (
+            <>
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+              />
+              <Marker position={position || DEFAULT_CENTER} icon={bus}></Marker>
+            </>
+          );
+        }}
       </Map>
       <ReactModal
         isOpen={isConfigModalOpen}
