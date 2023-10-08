@@ -12,13 +12,15 @@ export const CredentialsForm = ({
   credentials,
 }: CredentialsFormProps) => {
   return (
-    <div className="h-full w-full bg-slate-950 p-8">
+    <div className="h-full w-full bg-slate-950 p-8 flex flex-col gap-4">
+      <h2 className="text-lg font-bold">Configuration</h2>
       {credentials.code === "" && credentials.route === "" && (
         <p>Merci de renseigner en premier les parametres</p>
       )}
       <form
-        className="grid grid-cols-2 max-w-md gap-2 px-4 py-2 "
+        className="grid grid-cols-2 max-w-md gap-4 py-2 "
         onSubmit={onSubmit}
+        id="configuration"
       >
         <label htmlFor="route">Route</label>
         <input
@@ -41,8 +43,14 @@ export const CredentialsForm = ({
           required
           defaultValue={credentials.code}
         />
-        <input type={"submit"} className="col-span-2 bg-gray-700" />
       </form>
+      <button
+        type="submit"
+        className="col-span-2 bg-gray-700 py-2 rounded"
+        form="configuration"
+      >
+        OK
+      </button>
     </div>
   );
 };
