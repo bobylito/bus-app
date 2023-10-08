@@ -4,7 +4,7 @@ import { CredentialsForm } from "@/components/Form";
 import { Map } from "@/components/Map";
 import { useGPSUpdate } from "@/hooks/useGPSUpdate";
 import { useStoreCredentials } from "@/hooks/useStoreCredentials";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReactModal from "react-modal";
 import { BusError } from "./api/bus";
 
@@ -32,6 +32,14 @@ export default function Home() {
   const { credentials, saveCredentials } = useStoreCredentials();
   const { isLoading, data, error } = useGPSUpdate(credentials);
   const [isConfigModalOpen, setIsConfigModalOpen] = useState(false);
+  const [selfPosition, setSelfposition] = useState<LatLngTuple | null>(null);
+
+  useEffect(() => {
+    navigator.geolocation.watchPosition((pos) => {
+      const { latitude, longitude } = pos.coords;
+      setSelfposition([latitude, longitude]);
+    });
+  }, []);
 
   const position =
     isLoading || error || !data || data.object === "position-error"
@@ -64,12 +72,17 @@ export default function Home() {
       <Map
         width={800}
         height={400}
-        center={position || DEFAULT_CENTER}
-        position={position || DEFAULT_CENTER}
+        center={selfPosition || position || DEFAULT_CENTER}
+        position={selfPosition || position || DEFAULT_CENTER}
         zoom={14}
         scrollWheelZoom={false}
       >
         {({ TileLayer, Marker }: any, { icon }: any) => {
+          const family = icon({
+            iconUrl: "images/Family.png",
+            iconSize: [48, 48],
+            iconAnchor: [24, 48],
+          });
           const bus = icon({
             iconUrl: "images/Bus.png",
             iconSize: [48, 48],
@@ -83,6 +96,12 @@ export default function Home() {
                 attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
               />
               <Marker position={position || DEFAULT_CENTER} icon={bus}></Marker>
+              {selfPosition && (
+                <Marker
+                  position={selfPosition || DEFAULT_CENTER}
+                  icon={family}
+                ></Marker>
+              )}
             </>
           );
         }}
