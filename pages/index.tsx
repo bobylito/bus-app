@@ -87,6 +87,8 @@ export default function Home() {
             display: "flex",
             alignItems: "center",
             alignContent: "center",
+            backdropFilter: "blur(2px)",
+            background: "rgba(0,0,0,0.5)",
           },
           content: {
             padding: 0,
