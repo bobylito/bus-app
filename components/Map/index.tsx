@@ -16,10 +16,7 @@ export type MapProps = DynMapProps;
 export const Map = (props: MapProps) => {
   const { width = DEFAULT_WIDTH, height = DEFAULT_HEIGHT } = props;
   return (
-    <div
-      style={{ aspectRatio: width / height }}
-      className="absolute top-0 left-0 z-0 w-full"
-    >
+    <div className="absolute top-0 left-0 z-0 w-full h-full">
       <DynamicMap {...props} />
     </div>
   );

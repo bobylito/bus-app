@@ -42,7 +42,7 @@ export default function Home() {
 
   return (
     <div>
-      <div className="absolute bottom-0 left-0 px-4 py-2 w-full bg-slate-900">
+      <div className="absolute bottom-0 left-0 px-4 py-2 w-full bg-slate-900 z-20">
         Status :{" "}
         {data?.object === "position" &&
           `Derniere mise a jour : ${data.updatedAt}`}
