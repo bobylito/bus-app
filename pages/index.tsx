@@ -72,9 +72,8 @@ export default function Home() {
       <Map
         width={800}
         height={400}
-        center={selfPosition || position || DEFAULT_CENTER}
-        position={selfPosition || position || DEFAULT_CENTER}
-        zoom={14}
+        // center={selfPosition || position || DEFAULT_CENTER}
+        bounds={[selfPosition || DEFAULT_CENTER, position || DEFAULT_CENTER]}
         scrollWheelZoom={false}
       >
         {({ TileLayer, Marker }: any, { icon }: any) => {

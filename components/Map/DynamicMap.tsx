@@ -1,22 +1,20 @@
 import "leaflet/dist/leaflet.css";
 
-import Leaflet from "leaflet";
+import Leaflet, { LatLngBoundsExpression } from "leaflet";
 import { useEffect } from "react";
 import * as ReactLeaflet from "react-leaflet";
 
 const { MapContainer } = ReactLeaflet;
 
 type SetPositionProps = {
-  position: [number, number];
+  bounds?: LatLngBoundsExpression;
 };
 
-const SetPosition = ({ position }: SetPositionProps) => {
+const SetBounds = ({ bounds }: SetPositionProps) => {
   const map = ReactLeaflet.useMap();
 
-  if (position) {
-    map.setView(position, map.getZoom(), {
-      animate: true,
-    });
+  if (bounds) {
+    map.fitBounds(bounds);
   }
 
   return null;
@@ -25,7 +23,6 @@ const SetPosition = ({ position }: SetPositionProps) => {
 export type DynMapProps = Omit<ReactLeaflet.MapContainerProps, "children"> & {
   width: number;
   height: number;
-  position: [number, number];
   children: any;
 };
 
@@ -34,7 +31,7 @@ const Map = ({
   className,
   width,
   height,
-  position,
+  bounds,
   ...rest
 }: DynMapProps) => {
   useEffect(() => {
@@ -52,7 +49,7 @@ const Map = ({
   return (
     <MapContainer {...rest} style={{ width: "100%", height: "100%" }}>
       {children(ReactLeaflet, Leaflet)}
-      <SetPosition position={position} />
+      <SetBounds bounds={bounds} />
     </MapContainer>
   );
 };
