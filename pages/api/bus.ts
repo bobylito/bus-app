@@ -7,7 +7,7 @@ const MOCK = Boolean(process.env.MOCK) || false;
 
 const requestDataSchema = z.object({
   route: z.string().regex(/^\d\d$/, "Invalid route"),
-  code: z.string().regex(/^\d\d\d$/, "Invalid code"),
+  code: z.string().regex(/^\d{3,4}$/, "Invalid code"),
 });
 export type RequestData = z.infer<typeof requestDataSchema>;
 
