@@ -14,7 +14,9 @@ const SetBounds = ({ bounds }: SetPositionProps) => {
   const map = ReactLeaflet.useMap();
 
   if (bounds) {
-    map.fitBounds(bounds);
+    map.fitBounds(bounds, {
+      padding: [100, 100],
+    });
   }
 
   return null;
@@ -47,7 +49,11 @@ const Map = ({
   }, []);
 
   return (
-    <MapContainer {...rest} style={{ width: "100%", height: "100%" }}>
+    <MapContainer
+      {...rest}
+      style={{ width: "100%", height: "100%" }}
+      zoomSnap={0.1}
+    >
       {children(ReactLeaflet, Leaflet)}
       <SetBounds bounds={bounds} />
     </MapContainer>
