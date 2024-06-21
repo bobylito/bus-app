@@ -1,11 +1,13 @@
 import { LatLngTuple } from "leaflet";
 
-import { CredentialsForm } from "@/components/Form";
+import { CredentialsDialog } from "@/components/Form/DialogForm";
 import { Map } from "@/components/Map";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import { useGPSUpdate } from "@/hooks/useGPSUpdate";
 import { useStoreCredentials } from "@/hooks/useStoreCredentials";
+import { AlertCircle } from "lucide-react";
 import { useEffect, useState } from "react";
-import ReactModal from "react-modal";
 import { BusError } from "./api/bus";
 
 const DEFAULT_CENTER = [37.94185, 23.7619833] as LatLngTuple;
@@ -13,17 +15,15 @@ const DEFAULT_CENTER = [37.94185, 23.7619833] as LatLngTuple;
 const getErrorDisplay = ({ code }: BusError, callbackConfig: () => void) => {
   if (code === "parse")
     return (
-      <div className="inline-block">
-        Mauvais format de route / code{" "}
-        <button
-          onClick={callbackConfig}
-          className="bg-slate-50 px-2 py-1 text-red-400 rounded"
-        >
+      <div className="inline-flex justify-center items-center gap-2">
+        <p>Mauvais format de route / code</p>
+        <Button onClick={callbackConfig} className="px-2 py-1 ">
           Verifier la configuration
-        </button>
+        </Button>
       </div>
     );
-  if (code === "no-location" || code === "no-gps") return "Pas de coordonnees";
+  if (code === "no-location" || code === "no-gps")
+    return "Pas de coordonnees transmis par le bus";
   if (code === "technical-error" || code === "parse-error")
     return "Erreur technique";
 };
@@ -50,24 +50,33 @@ export default function Home() {
 
   return (
     <div>
-      <div className="absolute bottom-0 left-0 px-4 py-2 w-full bg-slate-900 z-20">
-        Status :{" "}
-        {data?.object === "position" &&
-          `Derniere mise a jour : ${data.updatedAt}`}
-        {data?.object === "position-error" &&
-          getErrorDisplay(data, () => {
-            setIsConfigModalOpen(true);
-          })}
+      <div className="absolute bottom-0 left-0 px-4 py-2 w-full z-20 bg-transparent">
+        <Alert
+          variant={
+            data?.object === "position-error" ? "destructive" : "default"
+          }
+          className="bg-background max-w-md"
+        >
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Status</AlertTitle>
+          <AlertDescription>
+            {data?.object === "position" &&
+              `Derniere mise a jour : ${data.updatedAt}`}
+            {data?.object === "position-error" &&
+              getErrorDisplay(data, () => {
+                setIsConfigModalOpen(true);
+              })}
+          </AlertDescription>
+        </Alert>
       </div>
       <div className="absolute top-0 right-0 p-2 z-10">
-        <button
-          className="bg-slate-50 text-black px-4 py-2 rounded hover:bg-slate-100 active:bg-slate-200"
+        <Button
           onClick={() => {
             setIsConfigModalOpen(!isConfigModalOpen);
           }}
         >
           Configuration
-        </button>
+        </Button>
       </div>
       <Map
         width={800}
@@ -105,39 +114,22 @@ export default function Home() {
           );
         }}
       </Map>
-      <ReactModal
-        isOpen={isConfigModalOpen}
-        style={{
-          overlay: {
-            zIndex: 20,
-            display: "flex",
-            alignItems: "center",
-            alignContent: "center",
-            backdropFilter: "blur(2px)",
-            background: "rgba(0,0,0,0.5)",
-          },
-          content: {
-            padding: 0,
-            width: "fit-content",
-            height: "fit-content",
-            position: "unset",
-            margin: "auto",
-          },
+
+      <CredentialsDialog
+        open={isConfigModalOpen}
+        onOpenChange={setIsConfigModalOpen}
+        credentials={credentials}
+        onSubmit={(e) => {
+          debugger;
+          e.preventDefault();
+          e.stopPropagation();
+          const formdata = new FormData(e.currentTarget);
+          const data = Object.fromEntries(formdata.entries());
+          console.log(data);
+          saveCredentials(data as { code: string; route: string }); // This is the form below
+          setIsConfigModalOpen(false);
         }}
-        onRequestClose={() => {}}
-      >
-        <CredentialsForm
-          credentials={credentials}
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const formdata = new FormData(e.currentTarget);
-            const data = Object.fromEntries(formdata.entries());
-            saveCredentials(data as { code: string; route: string }); // This is the form below
-            setIsConfigModalOpen(false);
-          }}
-        />
-      </ReactModal>
+      />
     </div>
   );
 }

@@ -10,7 +10,7 @@ export default function Document() {
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
         />
       </Head>
-      <body>
+      <body className="min-h-screen">
         <Main />
         <NextScript />
       </body>
