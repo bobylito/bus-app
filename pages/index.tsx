@@ -43,7 +43,7 @@ export default function Home() {
 
   const position =
     isLoading || error || !data || data.object === "position-error"
-      ? DEFAULT_CENTER
+      ? null
       : data.position;
 
   console.log({ data, error });
@@ -81,8 +81,10 @@ export default function Home() {
       <Map
         width={800}
         height={400}
-        // center={selfPosition || position || DEFAULT_CENTER}
-        bounds={[selfPosition || DEFAULT_CENTER, position || DEFAULT_CENTER]}
+        bounds={[
+          selfPosition || DEFAULT_CENTER,
+          position || selfPosition || DEFAULT_CENTER,
+        ]}
         scrollWheelZoom={false}
       >
         {({ TileLayer, Marker }: any, { icon }: any) => {
